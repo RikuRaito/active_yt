@@ -1,20 +1,23 @@
-# YAR(Active Youtube Reader)
+# Ayr(Active Youtube Reader)
 
 「おすすめ動画」や「ショート動画」の無限スクロールによる時間の浪費を防ぐために開発された、YouTube 専用の RSS リーダー風クライアントです。
 
-📖 概要 (Concept)
+# 📖 概要 (Concept)
+
 YouTube 公式アプリは、滞在時間を延ばすために強力なアルゴリズムで動画をレコメンドしてきます。本アプリは、その「ノイズ」を完全に排除し、「自分が登録したチャンネルの動画だけを、時系列で確認して終わる」 という本来の視聴スタイルを取り戻すためのツールです。
 
-主な特徴
+# 主な特徴
+
 🚫 No Recommendations: おすすめ動画、関連動画を一切表示しません。
 
 🚫 No Shorts: 時間を奪うショート動画をフィルタリング（除外）します。
 
-🔒 Secure Architecture: YouTube API キーをクライアントに持たせず、Supabase Edge Functions 経由で安全にリクエストします。
+# Secure Architecture: YouTube API キーをクライアントに持たせず、Supabase Edge Functions 経由で安全にリクエストします。
 
-📉 Quota Friendly: 検索 API (search) を使わず、プレイリスト取得 API (playlistItems) を使用することで API コストを最小化しています。
+Quota Friendly: 検索 API (search) を使わず、プレイリスト取得 API (playlistItems) を使用することで API コストを最小化しています。
 
-🛠 技術スタック (Tech Stack)
+# 技術スタック (Tech Stack)
+
 Frontend
 Framework: React Native (Expo SDK 50+)
 
@@ -33,7 +36,8 @@ API: Supabase Edge Functions (Deno)
 
 External API: YouTube Data API v3
 
-🏗 アーキテクチャ
+# アーキテクチャ
+
 API キーの流出を防ぐため、クライアントから YouTube API を直接叩くことはせず、Supabase をプロキシとして利用しています。
 
 Code snippet
@@ -76,7 +80,7 @@ Bash
 
 npm install
 
-# または
+または
 
 yarn install 3. 環境変数の設定
 .env ファイルを作成し、Supabase の接続情報を記述します。

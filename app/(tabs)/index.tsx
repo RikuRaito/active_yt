@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/themed-view";
 export default function HomeScreen() {
   return (
     <ThemedView>
-      <ThemedText>こんにちは</ThemedText>
+      <ThemedText>Hello World</ThemedText>
     </ThemedView>
   );
 }
