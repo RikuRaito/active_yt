@@ -1,6 +1,9 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { useAppleSignIn } from "@/components/useAppleSignIn";
+import { useGoogleSignIn } from "@/components/useGoogleSignIn";
 import { useAuth } from "@/contexts/auth-context";
+import { Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import {
@@ -10,6 +13,7 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  View,
 } from "react-native";
 
 export default function SignupScreen() {
@@ -18,6 +22,8 @@ export default function SignupScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
+  const { signIn: googleSignIn, isLoading: googleLoading } = useGoogleSignIn();
+  const { signIn: appleSignIn, isLoading: appleLoading } = useAppleSignIn();
 
   const handleSignup = async () => {
     if (!email || !password || !confirmPassword) {
@@ -96,6 +102,46 @@ export default function SignupScreen() {
           </ThemedText>
         </Pressable>
 
+        {/* 区切り線 */}
+        <View style={styles.dividerContainer}>
+          <View style={styles.divider} />
+          <ThemedText style={styles.dividerText}>または</ThemedText>
+          <View style={styles.divider} />
+        </View>
+
+        {/* ソーシャルログインボタン */}
+        <Pressable
+          style={[
+            styles.socialButton,
+            styles.googleButton,
+            googleLoading && styles.buttonDisabled,
+          ]}
+          onPress={googleSignIn}
+          disabled={googleLoading}
+        >
+          <Ionicons name="logo-google" size={20} color="#fff" />
+          <ThemedText style={styles.socialButtonText}>
+            {googleLoading ? "処理中..." : "Googleで続ける"}
+          </ThemedText>
+        </Pressable>
+
+        {Platform.OS === "ios" && (
+          <Pressable
+            style={[
+              styles.socialButton,
+              styles.appleButton,
+              appleLoading && styles.buttonDisabled,
+            ]}
+            onPress={appleSignIn}
+            disabled={appleLoading}
+          >
+            <Ionicons name="logo-apple" size={20} color="#fff" />
+            <ThemedText style={styles.socialButtonText}>
+              {appleLoading ? "処理中..." : "Appleで続ける"}
+            </ThemedText>
+          </Pressable>
+        )}
+
         <Link href="/(auth)/login" asChild>
           <Pressable style={styles.linkButton}>
             <ThemedText style={styles.linkText}>
@@ -116,7 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 24,
-    gap: 16,
+    gap: 12,
   },
   title: {
     fontSize: 32,
@@ -135,7 +181,7 @@ const styles = StyleSheet.create({
     borderColor: "#333",
   },
   button: {
-    backgroundColor: "#68b8e6",
+    backgroundColor: "#10b981",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
@@ -145,6 +191,42 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 16,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#333",
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: "#888",
+    fontSize: 14,
+  },
+  socialButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+  },
+  googleButton: {
+    backgroundColor: "#ea4335",
+  },
+  appleButton: {
+    backgroundColor: "#000",
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  socialButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
