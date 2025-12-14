@@ -27,7 +27,7 @@ function RootLayoutNav() {
       router.replace("/(auth)/login" as const);
     } else if (session && inAuthGroup) {
       // ログイン済みの場合、メイン画面へリダイレクト
-      router.replace("/(tabs)/home" as const);
+      router.replace("/(tabs)" as const);
     }
   }, [session, isLoading, segments]);
 
@@ -36,10 +36,6 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
         <Stack.Screen
           name="settings"
           options={{
