@@ -6,7 +6,6 @@ export const useSubscription = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<ChannelSearchResponse>();
   const [isLoading, setIsLoading] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(false);
 
   const performSearch = async () => {
     if (!searchQuery) {
@@ -29,8 +28,6 @@ export const useSubscription = () => {
     setSearchResults,
     isLoading,
     setIsLoading,
-    isEmpty,
-    setIsEmpty,
     performSearch,
   };
 };
