@@ -1,0 +1,34 @@
+# Ayr (Active Youtube Reader) - Project Rules
+
+## 1. プロジェクトの核となる原則
+- **脱・時間浪費**: YouTubeの「おすすめ」や「ショート動画」による無限スクロールを徹底的に排除する。
+- **RSSスタイル**: 自分が登録したチャンネルの動画のみを時系列で表示する。
+- **セキュリティ**: YouTube APIキーはクライアントサイドに持たせない。
+
+## 2. 技術スタック & 推奨構成
+- **Frontend**: React Native (Expo SDK 50+), Expo Router (File-based routing)
+- **Language**: TypeScript (厳格な型定義を推奨)
+- **UI**: 可能な限り Native Components (`View`, `FlatList`, `Text`) を使用し、一貫性のあるテーマ（`constants/theme.ts`）を適用する。
+- **Backend**: Supabase (Auth, Database, Edge Functions)
+
+## 3. 開発・コーディングルール
+- **API呼び出し**: YouTube Data APIをアプリから直接叩かない。必ず `supabase/functions/` 内の Edge Functions を介してリクエストを行う。
+- **クォータ節約**: 動画リストの取得には `search` API を使用せず、`playlistItems` API を使用すること。
+- **ディレクトリ構成**:
+  - `src/app/`: 画面遷移とルーティング。
+  - `src/components/`: 再利用可能なUI部品。
+  - `src/hooks/`: カスタムフック。
+  - `src/types/`: 型定義。
+  - `src/lib/`: Supabaseクライアントなどの初期化コード。
+  - `supabase/functions/`: バックエンドロジック（Deno）。
+
+## 4. UI/UX ガイドライン
+- YouTube公式のレコメンドアルゴリズムのような挙動（自動再生、関連動画への誘導）は実装しない。
+- 視聴済み動画やフィルタリング（Shorts除外）を意識したUI設計を行う。
+
+## 5. ボタンスタイルルール
+### 検索ボタン
+- 背景色: `#10b981`
+- 通常状態（アイドル）: 透明度 `0.9`
+- 処理中状態（ローディング）: 透明度 `0.6`
+
