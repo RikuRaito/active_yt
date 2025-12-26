@@ -36,7 +36,11 @@ export default function Subscription() {
           />
         </View>
         <TouchableOpacity style={styles.searchButton} onPress={performSearch}>
-          <Text style={styles.searchButtonText}>検索</Text>
+          {isLoading ? (
+            <Text style={styles.searchButtonText}>検索中...</Text>
+          ) : (
+            <Text style={styles.searchButtonText}>検索</Text>
+          )}
         </TouchableOpacity>
       </View>
       <View style={styles.subscribedChannels}>
@@ -53,7 +57,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   header: {
-    marginBottom: 32,
+    marginBottom: 20,
+    gap: 10,
   },
   title: {
     fontSize: 28,
