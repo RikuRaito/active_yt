@@ -1,5 +1,6 @@
 import { useSubscription } from "@/hooks/useSubscription";
 import {
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -7,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function Subscription() {
   const {
     searchQuery,
@@ -16,6 +18,7 @@ export default function Subscription() {
     isLoading,
     setIsLoading,
     performSearch,
+    performSubscribe,
   } = useSubscription();
 
   return (
@@ -43,6 +46,34 @@ export default function Subscription() {
           )}
         </TouchableOpacity>
       </View>
+      {searchResults && (
+        <View style={styles.resultsContainer}>
+          {searchResults.items?.map((channel) => (
+            <View key={channel.id} style={styles.channelCard}>
+              <Image
+                source={{ uri: channel.snippet.thumbnails.high.url }}
+                style={styles.thumbnail}
+              />
+              <View style={styles.channnelInfo}>
+                <Text style={styles.channelTitle} numberOfLines={1}>
+                  {channel.snippet.title}
+                </Text>
+                <Text style={styles.channelHandle} numberOfLines={1}>
+                  {channel.snippet.customUrl}
+                </Text>
+                {channel.statistics && (
+                  <Text style={styles.subscriberCount}>
+                    登録者数: {parseInt(channel.statistics.subscriberCount)}
+                  </Text>
+                )}
+              </View>
+              <TouchableOpacity style={styles.subscribeButton}>
+                <Text style={styles.subscribeButtonText}>登録</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
       <View style={styles.subscribedChannels}>
         <Text>登録済みチャンネル</Text>
       </View>
@@ -103,5 +134,51 @@ const styles = StyleSheet.create({
   },
   subscribedChannels: {
     flex: 1,
+  },
+  resultsContainer: {
+    marginTop: 24,
+  },
+  channelCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    borderRadius: 12,
+    padding: 12,
+    gap: 12,
+  },
+  thumbnail: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  channnelInfo: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  channelTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  channelHandle: {
+    fontSize: 13,
+    color: "#666",
+    marginTop: 2,
+  },
+  subscriberCount: {
+    fontSize: 12,
+    color: "#999",
+    marginTop: 4,
+  },
+  subscribeButton: {
+    backgroundColor: "#000",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+  },
+  subscribeButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

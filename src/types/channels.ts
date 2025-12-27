@@ -10,12 +10,12 @@ export interface YoutubeChannel {
     customUrl: string;
     thumbnails: {
       default: { url: string };
-      midium: { url: string };
+      medium: { url: string };
       high: { url: string };
     };
   };
   statistics?: {
-    subscribeCount: string;
+    subscriberCount: string;
     videoCount: string;
   };
 }
