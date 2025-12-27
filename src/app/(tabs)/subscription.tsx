@@ -30,6 +30,7 @@ export default function Subscription() {
 
       <View style={styles.searchBox}>
         <View style={styles.inputWrapper}>
+          <Text style={styles.atSymbol}>@</Text>
           <TextInput
             style={styles.input}
             placeholder="ハンドル名"
@@ -45,6 +46,11 @@ export default function Subscription() {
             <Text style={styles.searchButtonText}>検索</Text>
           )}
         </TouchableOpacity>
+      </View>
+      <View style={styles.searchHint}>
+        <Text style={styles.searchHintText}>
+          @をつけずにハンドル名を入力してください
+        </Text>
       </View>
       {searchResults && (
         <View style={styles.resultsContainer}>
@@ -111,11 +117,20 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#e0e0e0",
+    paddingLeft: 12,
+  },
+  atSymbol: {
+    fontSize: 16,
+    color: "#999",
+    marginRight: -4,
   },
   input: {
+    flex: 1,
     fontSize: 16,
     color: "#000",
     paddingVertical: 14,
@@ -131,6 +146,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  searchHint: {
+    marginTop: 8,
+    paddingHorizontal: 4,
+  },
+  searchHintText: {
+    fontSize: 12,
+    color: "#999",
   },
   subscribedChannels: {
     flex: 1,
