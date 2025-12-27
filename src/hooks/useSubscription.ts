@@ -1,4 +1,4 @@
-import { FUNCTIONS_URL } from "@/lib/config";
+import { supabase } from "@/lib/supabase";
 import { ChannelSearchResponse } from "@/types/channels";
 import { useState } from "react";
 import { Alert } from "react-native";
@@ -18,24 +18,20 @@ export const useSubscription = () => {
 
       console.log("Searching for: @", searchQuery);
 
-      const res = await fetch(`${FUNCTIONS_URL}/search-channel`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          handle: searchQuery,
-        }),
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "search-channel",
+        {
+          body: { handle: searchQuery },
+        }
+      );
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.log("Response error", errorData);
+      if (error) {
+        console.log("Response error", error);
+        console.log("Error Status:", error.context?.status);
+        console.log("Error Message:", error.message);
+        setIsLoading(false);
         return;
       }
-
-      const data = await res.json();
-      //console.log("Search Results: ", data);
 
       if (data && data.length > 0) {
         const rawChannel = data[0];
@@ -62,7 +58,7 @@ export const useSubscription = () => {
               },
               statistics: {
                 subscriberCount: rawChannel.statistics.subscriberCount,
-                videoCount: rawChannel.videoCount,
+                videoCount: rawChannel.statistics.videoCount,
               },
             },
           ],
