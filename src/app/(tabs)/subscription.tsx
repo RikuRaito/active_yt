@@ -13,8 +13,8 @@ export default function Subscription() {
   const {
     searchQuery,
     setSearchQuery,
-    searchResults,
-    setSearchResults,
+    searchResult,
+    setSearchResult,
     isLoading,
     setIsLoading,
     performSearch,
@@ -52,32 +52,29 @@ export default function Subscription() {
           @をつけずにハンドル名を入力してください
         </Text>
       </View>
-      {searchResults && (
+      {searchResult && (
         <View style={styles.resultsContainer}>
-          {searchResults.items?.map((channel) => (
-            <View key={channel.id} style={styles.channelCard}>
-              <Image
-                source={{ uri: channel.snippet.thumbnails.high.url }}
-                style={styles.thumbnail}
-              />
-              <View style={styles.channnelInfo}>
-                <Text style={styles.channelTitle} numberOfLines={1}>
-                  {channel.snippet.title}
-                </Text>
-                <Text style={styles.channelHandle} numberOfLines={1}>
-                  {channel.snippet.customUrl}
-                </Text>
-                {channel.statistics && (
-                  <Text style={styles.subscriberCount}>
-                    登録者数: {parseInt(channel.statistics.subscriberCount)}
-                  </Text>
-                )}
-              </View>
-              <TouchableOpacity style={styles.subscribeButton}>
-                <Text style={styles.subscribeButtonText}>登録</Text>
-              </TouchableOpacity>
+          <View style={styles.channelCard}>
+            <Image
+              source={{ uri: searchResult.thumbnails.high }}
+              style={styles.thumbnail}
+            />
+            <View style={styles.channnelInfo}>
+              <Text style={styles.channelTitle} numberOfLines={1}>
+                {searchResult.title}
+              </Text>
+              <Text style={styles.channelHandle} numberOfLines={1}>
+                {searchResult.customUrl}
+              </Text>
+              <Text style={styles.subscriberCount}>
+                登録者数:{" "}
+                {parseInt(searchResult.subscriberCount).toLocaleString()}
+              </Text>
             </View>
-          ))}
+            <TouchableOpacity style={styles.subscribeButton}>
+              <Text style={styles.subscribeButtonText}>登録</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
       <View style={styles.subscribedChannels}>
