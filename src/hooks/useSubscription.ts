@@ -47,7 +47,29 @@ export const useSubscription = () => {
     }
   };
 
-  const performSubscribe = async (channel: Channel) => {};
+  const performSubscribe = async (channel: Channel) => {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "subscribe-channel",
+        {
+          body: {
+            id: channel.id,
+          },
+        }
+      );
+      if (error) {
+        console.log("Response error: ", error);
+        Alert.alert("エラー", "登録に失敗しました");
+        return;
+      }
+      if (data) {
+        Alert.alert("成功", "登録に成功しました");
+      }
+    } catch (err) {
+      console.log("Internal Error: ", err);
+      throw new Error(`Error: ${err}`);
+    }
+  };
 
   return {
     searchQuery,

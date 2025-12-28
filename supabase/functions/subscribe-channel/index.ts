@@ -19,22 +19,34 @@ Deno.serve(async (req) => {
     const channelId = body.id;
     const userUuid = user.id;
 
-    const { data: existing } = await adminClient
-      .from("subscriptions")
-      .select("id")
-      .eq("uuid", userUuid)
-      .eq("channel_id", channelId)
-      .maybeSingle();
-    if (existing) {
-      return new Response(
-        JSON.stringify({ message: "already subscribed this channel" }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
-      );
-    }
-    const { data, error: dbError } = await adminClient
+    //Yotube Data APIからチャンネルのプレイリストID等のデータを取得
+    const apiKey = Deno.env.get("YOUTUBE_API_KEY");
+    const youtubeUrl = Deno.env.get("YOUTUBE_API_URL");
+    const ytRes = await fetch(
+      `${youtubeUrl}?part=snippet,contentDetails,statistics&id=${channelId}&key=${apiKey}`
+    );
+    const ytData = await ytRes.json();
+    const ytChannel = ytData.items[0];
+
+    if (!ytChannel) throw new Error("Channel not found on Youtube");
+
+    //channelsテーブルにデータ保存
+    const { error: chError } = await adminClient.from("channels").upsert(
+      {
+        channel_id: channelId,
+        title: ytChannel.snippet.title,
+        handle: ytChannel.snippet.customUrl,
+        thumbnail_url: ytChannel.snippet.thumbnails.high?.url,
+        uploads_playlist_id: ytChannel.contentDetails.relatedPlaylists.uploads,
+        subscriber_count: ytChannel.statistics?.subscriberCount,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "channel_id" }
+    );
+    if (chError) throw chError;
+
+    //subscriptionsテーブルにデータ保存
+    const { data, error: subError } = await adminClient
       .from("subscriptions")
       .upsert(
         {
@@ -46,9 +58,9 @@ Deno.serve(async (req) => {
 
       .select()
       .single();
-    if (dbError) {
-      console.error("Database Error:", dbError);
-      throw new Error(`DB Error: ${dbError.message}`);
+    if (subError) {
+      console.error("Database Error:", subError);
+      throw new Error(`DB Error: ${subError.message}`);
     }
     return new Response(JSON.stringify({ message: "チャンネルの登録に成功" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

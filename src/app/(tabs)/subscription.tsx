@@ -71,7 +71,10 @@ export default function Subscription() {
                 {parseInt(searchResult.subscriberCount).toLocaleString()}
               </Text>
             </View>
-            <TouchableOpacity style={styles.subscribeButton}>
+            <TouchableOpacity
+              style={styles.subscribeButton}
+              onPress={() => performSubscribe(searchResult)}
+            >
               <Text style={styles.subscribeButtonText}>登録</Text>
             </TouchableOpacity>
           </View>
