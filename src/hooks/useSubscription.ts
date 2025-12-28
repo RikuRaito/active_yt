@@ -1,11 +1,11 @@
 import { supabase } from "@/lib/supabase";
-import { ChannelSearchResponse } from "@/types/channels";
+import { Channel } from "@/types/channels";
 import { useState } from "react";
 import { Alert } from "react-native";
 
 export const useSubscription = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<ChannelSearchResponse>();
+  const [searchResult, setSearchResult] = useState<Channel | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const performSearch = async () => {
@@ -15,10 +15,11 @@ export const useSubscription = () => {
         return;
       }
       setIsLoading(true);
+      setSearchResult(null);
 
       console.log("Searching for: @", searchQuery);
 
-      const { data, error } = await supabase.functions.invoke(
+      const { data, error } = await supabase.functions.invoke<Channel>(
         "search-channel",
         {
           body: { handle: searchQuery },
@@ -33,53 +34,48 @@ export const useSubscription = () => {
         return;
       }
 
-      if (data && data.length > 0) {
-        const rawChannel = data[0];
-
-        const mappedResults: ChannelSearchResponse = {
-          items: [
-            {
-              id: rawChannel.id,
-              snippet: {
-                title: rawChannel.snippet.title,
-                description: rawChannel.snippet.description,
-                customUrl: rawChannel.snippet.customUrl,
-                thumbnails: {
-                  default: {
-                    url: rawChannel.snippet.thumbnails.default.url,
-                  },
-                  medium: {
-                    url: rawChannel.snippet.thumbnails.medium.url,
-                  },
-                  high: {
-                    url: rawChannel.snippet.thumbnails.high.url,
-                  },
-                },
-              },
-              statistics: {
-                subscriberCount: rawChannel.statistics.subscriberCount,
-                videoCount: rawChannel.statistics.videoCount,
-              },
-            },
-          ],
-        };
-        setSearchResults(mappedResults);
+      // Functions側でマッピング済みのデータをそのまま使用
+      if (data) {
+        setSearchResult(data);
       }
 
       setIsLoading(false);
     } catch (error) {
       console.log("Internal Error: ", error);
+      setIsLoading(false);
       throw new Error(`Error: ${error}`);
     }
   };
 
-  const performSubscribe = async (channel: ChannelSearchResponse) => {};
+  const performSubscribe = async (channel: Channel) => {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "subscribe-channel",
+        {
+          body: {
+            id: channel.id,
+          },
+        }
+      );
+      if (error) {
+        console.log("Response error: ", error);
+        Alert.alert("エラー", "登録に失敗しました");
+        return;
+      }
+      if (data) {
+        Alert.alert("成功", "登録に成功しました");
+      }
+    } catch (err) {
+      console.log("Internal Error: ", err);
+      throw new Error(`Error: ${err}`);
+    }
+  };
 
   return {
     searchQuery,
     setSearchQuery,
-    searchResults,
-    setSearchResults,
+    searchResult,
+    setSearchResult,
     isLoading,
     setIsLoading,
     performSearch,

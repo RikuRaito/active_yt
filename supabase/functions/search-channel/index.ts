@@ -28,7 +28,24 @@ Deno.serve(async (req) => {
         status: 404,
       });
     }
-    return new Response(JSON.stringify(data.items), {
+
+    // マッピング処理: アプリが使いやすい形に整形
+    const channel = data.items[0];
+    const mappedChannel = {
+      id: channel.id,
+      title: channel.snippet.title,
+      description: channel.snippet.description,
+      customUrl: channel.snippet.customUrl,
+      thumbnails: {
+        default: channel.snippet.thumbnails.default?.url ?? "",
+        medium: channel.snippet.thumbnails.medium?.url ?? "",
+        high: channel.snippet.thumbnails.high?.url ?? "",
+      },
+      subscriberCount: channel.statistics?.subscriberCount ?? "0",
+      videoCount: channel.statistics?.videoCount ?? "0",
+    };
+
+    return new Response(JSON.stringify(mappedChannel), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
