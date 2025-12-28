@@ -1,48 +1,12 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import { authenticateUser, corsHeaders } from "../_shared/auth.ts";
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  const authResult = await authenticateUser(req);
+
+  if (authResult instanceof Response) {
+    return authResult;
   }
-
-  //認証ヘッダーの取得
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader) {
-    return new Response(JSON.stringify({ error: "認証が必要です" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  //トークン検証
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-    {
-      global: {
-        headers: { Authorization: authHeader },
-      },
-    }
-  );
-
-  const {
-    data: { user },
-    error,
-  } = await supabaseClient.auth.getUser();
-
-  if (error || !user) {
-    return new Response(JSON.stringify({ error: "Invalid token" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
+  const { client, user } = authResult;
   try {
     const body = await req.json();
     const handle = body.handle;
