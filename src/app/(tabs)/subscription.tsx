@@ -22,15 +22,11 @@ export default function Subscription() {
     performSubscribe,
   } = useSubscription();
 
-<<<<<<< HEAD
   const {
     data: channels,
     isLoading: isLoadingChannels,
     error,
   } = useSubscribedChannels();
-=======
-  const { data: channels, error } = useSubscribedChannels();
->>>>>>> main
 
   return (
     <SafeAreaView className="flex-1 bg-white px-6">
@@ -108,7 +104,6 @@ export default function Subscription() {
           </View>
         </View>
       )}
-<<<<<<< HEAD
 
       <View className="flex-1 mt-6">
         <Text className="text-lg font-bold text-gray-900 mb-3">
@@ -135,7 +130,10 @@ export default function Subscription() {
                 key={channel.id}
                 className="flex-row items-center bg-gray-50 rounded-xl p-3 gap-3 mb-3"
               >
-                <View className="w-[50px] h-[50px] rounded-full bg-gray-200" />
+                <Image
+                  src={channel.thumbnailUrl}
+                  className="w-[50px] h-[50px] rounded-full bg-gray-200"
+                />
                 <View className="flex-1 justify-center">
                   <Text
                     className="text-base font-bold text-black"
@@ -157,143 +155,7 @@ export default function Subscription() {
             ))}
           </ScrollView>
         )}
-=======
-      <View style={styles.subscribedChannels}>
-        <Text>登録済みチャンネル</Text>
-        <Text>取得件数: {channels?.length ?? 0}</Text>
-        {channels?.map((channel) => (
-          <View key={channel.id}>
-            <Text>タイトル: {channel.title}</Text>
-            <Text>ハンドル: {channel.handle}</Text>
-            <Text>登録者数:{channel.subscriberCount}</Text>
-            <Text>ID: {channel.id}</Text>
-            <Text>プレイリストID:{channel.uploadsPlaylistId}</Text>
-          </View>
-        ))}
->>>>>>> main
       </View>
     </SafeAreaView>
   );
 }
-<<<<<<< HEAD
-=======
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 24,
-  },
-  header: {
-    marginBottom: 20,
-    gap: 10,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#1a1a1a",
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 15,
-    color: "#666",
-    lineHeight: 20,
-  },
-  searchBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingRight: 24,
-  },
-  inputWrapper: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    paddingLeft: 12,
-  },
-  atSymbol: {
-    fontSize: 16,
-    color: "#999",
-    marginRight: -4,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: "#000",
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-  },
-  searchButton: {
-    backgroundColor: "#10b981",
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  searchButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  searchHint: {
-    marginTop: 8,
-    paddingHorizontal: 4,
-  },
-  searchHintText: {
-    fontSize: 12,
-    color: "#999",
-  },
-  resultsContainer: {
-    marginTop: 24,
-  },
-  channelCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    borderRadius: 12,
-    padding: 12,
-    gap: 12,
-  },
-  thumbnail: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  channnelInfo: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  channelTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  channelHandle: {
-    fontSize: 13,
-    color: "#666",
-    marginTop: 2,
-  },
-  subscriberCount: {
-    fontSize: 12,
-    color: "#999",
-    marginTop: 4,
-  },
-  subscribeButton: {
-    backgroundColor: "#000",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-  },
-  subscribeButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  subscribedChannels: {
-    flex: 1,
-  },
-});
->>>>>>> main
