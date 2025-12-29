@@ -1,3 +1,4 @@
+import { useSubscribedChannels } from "@/hooks/useSubscribedChannels";
 import { useSubscription } from "@/hooks/useSubscription";
 import {
   Image,
@@ -20,6 +21,8 @@ export default function Subscription() {
     performSearch,
     performSubscribe,
   } = useSubscription();
+
+  const { data: channels, error } = useSubscribedChannels();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -82,6 +85,16 @@ export default function Subscription() {
       )}
       <View style={styles.subscribedChannels}>
         <Text>登録済みチャンネル</Text>
+        <Text>取得件数: {channels?.length ?? 0}</Text>
+        {channels?.map((channel) => (
+          <View key={channel.id}>
+            <Text>タイトル: {channel.title}</Text>
+            <Text>ハンドル: {channel.handle}</Text>
+            <Text>登録者数:{channel.subscriberCount}</Text>
+            <Text>ID: {channel.id}</Text>
+            <Text>プレイリストID:{channel.uploadsPlaylistId}</Text>
+          </View>
+        ))}
       </View>
     </SafeAreaView>
   );
@@ -155,9 +168,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#999",
   },
-  subscribedChannels: {
-    flex: 1,
-  },
   resultsContainer: {
     marginTop: 24,
   },
@@ -203,5 +213,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "600",
+  },
+  subscribedChannels: {
+    flex: 1,
   },
 });

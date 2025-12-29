@@ -1,5 +1,7 @@
+import { useAuth } from "@/contexts/auth-context";
 import { supabase } from "@/lib/supabase";
 import { Channel } from "@/types/channels";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert } from "react-native";
 
@@ -7,6 +9,8 @@ export const useSubscription = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<Channel | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const performSearch = async () => {
     try {
@@ -64,6 +68,9 @@ export const useSubscription = () => {
       }
       if (data) {
         Alert.alert("成功", "登録に成功しました");
+        queryClient.invalidateQueries({
+          queryKey: ["subscribed-channels", user?.id],
+        });
       }
     } catch (err) {
       console.log("Internal Error: ", err);
