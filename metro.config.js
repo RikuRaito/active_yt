@@ -1,6 +1,8 @@
 const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 
-module.exports = (() => {
+// 1. まずデフォルト設定を取得し、SVGの設定を行う
+const config = (() => {
   const config = getDefaultConfig(__dirname);
 
   const { transformer, resolver } = config;
@@ -17,3 +19,6 @@ module.exports = (() => {
 
   return config;
 })();
+
+// 2. 最後に NativeWind の設定で全体をラップして export する
+module.exports = withNativeWind(config, { input: "./global.css" });

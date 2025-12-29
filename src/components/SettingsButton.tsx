@@ -29,7 +29,7 @@ export function SettingsButton({
 const styles = StyleSheet.create({
   button: {
     padding: 8,
-    paddingRight: 16,
+    paddingRight: 10,
   },
   pressed: {
     opacity: 0.6,

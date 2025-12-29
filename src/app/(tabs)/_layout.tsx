@@ -18,6 +18,9 @@ export default function TabLayout() {
         headerRight: () => (
           <SettingsButton color={colorScheme === "dark" ? "#fff" : "#000"} />
         ),
+        headerRightContainerStyle: {
+          paddingRight: 20,
+        },
         headerTitle: "",
         headerStyle: {
           backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
