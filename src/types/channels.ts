@@ -13,25 +13,12 @@ export interface Channel {
   videoCount: string;
 }
 
-// 旧型（後方互換のため残しておく）
-export interface ChannelSearchResponse {
-  items?: YoutubeChannel[];
-}
-
-export interface YoutubeChannel {
+//登録済みチャンネルを保持するための型
+export interface SubscribedChannel {
   id: string;
-  snippet: {
-    title: string;
-    description: string;
-    customUrl: string;
-    thumbnails: {
-      default: { url: string };
-      medium: { url: string };
-      high: { url: string };
-    };
-  };
-  statistics?: {
-    subscriberCount: string;
-    videoCount: string;
-  };
+  title: string;
+  thumbnailUrl: string;
+  uploadsPlaylistId: string;
+  handle: string;
+  subscriberCount: number;
 }
