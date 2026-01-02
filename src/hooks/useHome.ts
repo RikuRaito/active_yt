@@ -36,8 +36,18 @@ export const useHome = () => {
     enabled: !!channels && channels.length > 0,
   });
 
+  // 動画データにチャンネル情報を紐付け
+  const videosWithChannelInfo =
+    videoData?.items.map((video) => {
+      const channel = channels?.find((c) => c.id === video.channelId);
+      return {
+        ...video,
+        channelThumbnail: channel?.thumbnailUrl,
+      };
+    }) ?? [];
+
   return {
-    videos: videoData?.items ?? [],
+    videos: videosWithChannelInfo,
     isLoading: isLoadingChannel || isLoadingVideos,
     performGetVideos,
   };

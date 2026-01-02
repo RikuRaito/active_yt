@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
         return [];
       }
       const data = await res.json();
-      const mappedData: VideoCardData = data.items.map((d) => ({
+      const mappedData: VideoCardData[] = data.items.map((d: any) => ({
         channelId: d.snippet.channelId,
         videoId: d.snippet.resourceId.videoId,
         title: d.snippet.title,
