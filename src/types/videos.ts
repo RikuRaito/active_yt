@@ -6,6 +6,7 @@ export interface Video {
   thumbnail: string;
   channelTitle: string;
   publishedAt: string;
+  channelThumbnail?: string;
 }
 
 //APIから直接返ってくる生データを受け取るための型
