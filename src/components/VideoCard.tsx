@@ -32,7 +32,7 @@ export const VideoCard = ({ video, onPressChannel }: VideoCardProps) => {
     setIsModalVisible(true);
     setIsPlaying(true);
     await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.LANDSCAPE_LEFT
+      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
     );
   };
 
