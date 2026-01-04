@@ -78,6 +78,28 @@ export const useSubscription = () => {
     }
   };
 
+  const performUnscribe = async (channelId: string) => {
+    try {
+      const { error } = await supabase
+        .from("subscriptions")
+        .delete()
+        .eq("uuid", user?.id)
+        .eq("channel_id", channelId);
+      if (error) {
+        console.error("Unsbcscribe Error: ", error);
+        Alert.alert("エラー", "登録解除に失敗しました");
+        return;
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["subscribed-channels", user?.id],
+      });
+      Alert.alert("成功", "登録解除に成功しました");
+    } catch (err) {
+      console.error("Internal Unsbscribe Error: ", err);
+      return;
+    }
+  };
+
   return {
     searchQuery,
     setSearchQuery,
@@ -87,5 +109,6 @@ export const useSubscription = () => {
     setIsLoading,
     performSearch,
     performSubscribe,
+    performUnscribe,
   };
 };
