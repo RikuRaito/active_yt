@@ -18,6 +18,7 @@ export default function Subscription() {
     isLoading,
     performSearch,
     performSubscribe,
+    performUnscribe,
   } = useSubscription();
 
   const {
@@ -155,6 +156,14 @@ export default function Subscription() {
                     登録者数: {channel.subscriberCount.toLocaleString()}
                   </Text>
                 </View>
+                <TouchableOpacity
+                  className="border border-red-200 dark:border-red-900/30 px-3 py-1.5 rounded-full"
+                  onPress={() => performUnscribe(channel.id)}
+                >
+                  <Text className="text-red-500 dark:text-red-400 text-sm font-medium">
+                    登録解除
+                  </Text>
+                </TouchableOpacity>
               </View>
             ))}
           </ScrollView>
