@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useColorScheme as useNativewindColorScheme } from "nativewind";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import "../../global.css";
@@ -17,9 +18,15 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const { setColorScheme } = useNativewindColorScheme();
   const { session, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+
+  // システムのカラースキームをNativeWindに反映
+  useEffect(() => {
+    setColorScheme(colorScheme ?? "light");
+  }, [colorScheme]);
 
   useEffect(() => {
     if (isLoading) return;

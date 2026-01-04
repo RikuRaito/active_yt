@@ -1,6 +1,4 @@
 import GoogleIcon from "@/assets/images/google-icon.svg";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 import { useAppleSignIn } from "@/components/useAppleSignIn";
 import { useGoogleSignIn } from "@/components/useGoogleSignIn";
 import { useAuth } from "@/contexts/auth-context";
@@ -12,7 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  StyleSheet,
+  Text,
   TextInput,
   View,
 } from "react-native";
@@ -46,36 +44,39 @@ export default function LoginScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <View className="flex-1 bg-white dark:bg-black">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.inner}
+        className="flex-1 justify-center px-7"
       >
-        <View style={styles.header}>
-          <ThemedText style={styles.title}>おかえりなさい</ThemedText>
-          <ThemedText style={styles.subtitle}>
+        <View className="mb-10">
+          <Text className="text-4xl font-extrabold text-center mb-2 text-gray-900 dark:text-white">
+            おかえりなさい
+          </Text>
+          <Text className="text-[15px] text-gray-500 dark:text-gray-400 text-center">
             アカウントにログインしてください
-          </ThemedText>
+          </Text>
         </View>
 
-        <View style={styles.formContainer}>
+        <View className="gap-4">
           {/* メールアドレス入力 */}
           <View
-            style={[
-              styles.inputContainer,
-              emailFocused && styles.inputContainerFocused,
-            ]}
+            className={`flex-row items-center bg-gray-100 dark:bg-gray-900 rounded-2xl border-2 px-4 py-1 ${
+              emailFocused
+                ? "border-emerald-500 dark:border-emerald-400"
+                : "border-gray-200 dark:border-gray-800"
+            }`}
           >
             <Ionicons
               name="mail-outline"
               size={20}
               color={emailFocused ? "#10b981" : "#666"}
-              style={styles.inputIcon}
+              style={{ marginRight: 12 }}
             />
             <TextInput
-              style={styles.input}
+              className="flex-1 text-base text-gray-900 dark:text-white py-4"
               placeholder="メールアドレス"
-              placeholderTextColor="#666"
+              placeholderTextColor="#999"
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
@@ -87,21 +88,22 @@ export default function LoginScreen() {
 
           {/* パスワード入力 */}
           <View
-            style={[
-              styles.inputContainer,
-              passwordFocused && styles.inputContainerFocused,
-            ]}
+            className={`flex-row items-center bg-gray-100 dark:bg-gray-900 rounded-2xl border-2 px-4 py-1 ${
+              passwordFocused
+                ? "border-emerald-500 dark:border-emerald-400"
+                : "border-gray-200 dark:border-gray-800"
+            }`}
           >
             <Ionicons
               name="lock-closed-outline"
               size={20}
               color={passwordFocused ? "#10b981" : "#666"}
-              style={styles.inputIcon}
+              style={{ marginRight: 12 }}
             />
             <TextInput
-              style={styles.input}
+              className="flex-1 text-base text-gray-900 dark:text-white py-4"
               placeholder="パスワード"
-              placeholderTextColor="#666"
+              placeholderTextColor="#999"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -110,7 +112,7 @@ export default function LoginScreen() {
             />
             <Pressable
               onPress={() => setShowPassword(!showPassword)}
-              style={styles.eyeIcon}
+              className="p-2"
             >
               <Ionicons
                 name={showPassword ? "eye-outline" : "eye-off-outline"}
@@ -122,252 +124,76 @@ export default function LoginScreen() {
 
           {/* ログインボタン */}
           <Pressable
-            style={({ pressed }) => [
-              styles.button,
-              loading && styles.buttonDisabled,
-              pressed && styles.buttonPressed,
-            ]}
+            className={`bg-emerald-500 rounded-2xl p-[18px] flex-row items-center justify-center gap-2 mt-2 ${
+              loading ? "opacity-60" : ""
+            }`}
             onPress={handleLogin}
             disabled={loading}
           >
-            {loading ? (
-              <ThemedText style={styles.buttonText}>ログイン中...</ThemedText>
-            ) : (
-              <>
-                <ThemedText style={styles.buttonText}>ログイン</ThemedText>
-                <Ionicons name="arrow-forward" size={20} color="#fff" />
-              </>
+            <Text className="text-white text-[17px] font-bold">
+              {loading ? "ログイン中..." : "ログイン"}
+            </Text>
+            {!loading && (
+              <Ionicons name="arrow-forward" size={20} color="#fff" />
             )}
           </Pressable>
         </View>
 
         {/* 区切り線 */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.divider} />
-          <ThemedText style={styles.dividerText}>または</ThemedText>
-          <View style={styles.divider} />
+        <View className="flex-row items-center my-7">
+          <View className="flex-1 h-[1px] bg-gray-200 dark:bg-gray-800" />
+          <Text className="mx-4 text-gray-500 dark:text-gray-400 text-xs font-medium uppercase">
+            または
+          </Text>
+          <View className="flex-1 h-[1px] bg-gray-200 dark:bg-gray-800" />
         </View>
 
         {/* ソーシャルログインボタン */}
-        <View style={styles.socialButtonsContainer}>
+        <View className="gap-3">
           <Pressable
-            style={({ pressed }) => [
-              styles.socialButton,
-              styles.googleButton,
-              googleLoading && styles.buttonDisabled,
-              pressed && styles.socialButtonPressed,
-            ]}
+            className={`flex-row items-center justify-center rounded-2xl p-4 gap-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 ${
+              googleLoading ? "opacity-60" : ""
+            }`}
             onPress={googleSignIn}
             disabled={googleLoading}
           >
             <GoogleIcon width={22} height={22} />
-            <ThemedText style={styles.socialButtonGoogleText}>
+            <Text className="text-gray-900 dark:text-white text-base font-semibold">
               {googleLoading ? "処理中..." : "Googleでログイン"}
-            </ThemedText>
+            </Text>
           </Pressable>
 
           {Platform.OS === "ios" && (
             <Pressable
-              style={({ pressed }) => [
-                styles.socialButton,
-                styles.appleButton,
-                appleLoading && styles.buttonDisabled,
-                pressed && styles.socialButtonPressed,
-              ]}
+              className={`flex-row items-center justify-center rounded-2xl p-4 gap-2.5 bg-black dark:bg-white border border-gray-800 dark:border-gray-200 ${
+                appleLoading ? "opacity-60" : ""
+              }`}
               onPress={appleSignIn}
               disabled={appleLoading}
             >
-              <Ionicons name="logo-apple" size={22} color="#fff" />
-              <ThemedText style={styles.socialButtonAppleText}>
+              <Ionicons
+                name="logo-apple"
+                size={22}
+                color={Platform.OS === "ios" ? "#fff" : "#000"}
+              />
+              <Text className="text-white dark:text-black text-base font-semibold">
                 {appleLoading ? "処理中..." : "Appleでログイン"}
-              </ThemedText>
+              </Text>
             </Pressable>
           )}
         </View>
 
         <Link href="/(auth)/signup" asChild>
-          <Pressable style={styles.linkButton}>
-            <ThemedText style={styles.linkText}>
+          <Pressable className="items-center mt-6 p-2">
+            <Text className="text-gray-500 dark:text-gray-400 text-sm">
               アカウントをお持ちでない方は
-              <ThemedText style={styles.linkTextBold}>こちら</ThemedText>
-            </ThemedText>
+              <Text className="text-emerald-500 dark:text-emerald-400 font-bold">
+                こちら
+              </Text>
+            </Text>
           </Pressable>
         </Link>
       </KeyboardAvoidingView>
-    </ThemedView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inner: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 28,
-  },
-  header: {
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 36,
-    lineHeight: 44,
-    fontWeight: "800",
-    textAlign: "center",
-    marginBottom: 8,
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: "#888",
-    textAlign: "center",
-    fontWeight: "400",
-  },
-  formContainer: {
-    gap: 16,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1a1a1a",
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: "#2a2a2a",
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  inputContainerFocused: {
-    borderColor: "#10b981",
-    backgroundColor: "#1f1f1f",
-    shadowColor: "#10b981",
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 5,
-  },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: "#fff",
-    paddingVertical: 16,
-  },
-  eyeIcon: {
-    padding: 8,
-  },
-  button: {
-    backgroundColor: "#10b981",
-    borderRadius: 16,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginTop: 8,
-    shadowColor: "#10b981",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  buttonPressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.9,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 17,
-    fontWeight: "700",
-  },
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 28,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#2a2a2a",
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: "#666",
-    fontSize: 13,
-    fontWeight: "500",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  socialButtonsContainer: {
-    gap: 12,
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 16,
-    padding: 16,
-    gap: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  socialButtonPressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.9,
-  },
-  googleButton: {
-    backgroundColor: "#fff",
-    borderWidth: 1.5,
-    borderColor: "#e0e0e0",
-  },
-  socialButtonGoogleText: {
-    color: "#1f1f1f",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  appleButton: {
-    backgroundColor: "#000",
-    borderWidth: 1.5,
-    borderColor: "#2a2a2a",
-  },
-  socialButtonAppleText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  linkButton: {
-    alignItems: "center",
-    marginTop: 24,
-    padding: 8,
-  },
-  linkText: {
-    color: "#888",
-    fontSize: 14,
-    fontWeight: "400",
-  },
-  linkTextBold: {
-    color: "#10b981",
-    fontWeight: "700",
-  },
-});

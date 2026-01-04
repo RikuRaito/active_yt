@@ -1,6 +1,4 @@
 import GoogleIcon from "@/assets/images/google-icon.svg";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 import { useAppleSignIn } from "@/components/useAppleSignIn";
 import { useGoogleSignIn } from "@/components/useGoogleSignIn";
 import { useAuth } from "@/contexts/auth-context";
@@ -12,7 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  StyleSheet,
+  Text,
   TextInput,
   View,
 } from "react-native";
@@ -58,17 +56,19 @@ export default function SignupScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <View className="flex-1 bg-white dark:bg-black">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.inner}
+        className="flex-1 justify-center px-6 gap-3"
       >
-        <ThemedText style={styles.title}>アカウント作成</ThemedText>
+        <Text className="text-4xl font-extrabold text-center mb-8 text-gray-900 dark:text-white">
+          アカウント作成
+        </Text>
 
         <TextInput
-          style={styles.input}
+          className="bg-gray-100 dark:bg-gray-900 rounded-2xl p-4 text-base text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800"
           placeholder="メールアドレス"
-          placeholderTextColor="#888"
+          placeholderTextColor="#999"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -76,173 +76,85 @@ export default function SignupScreen() {
         />
 
         <TextInput
-          style={styles.input}
+          className="bg-gray-100 dark:bg-gray-900 rounded-2xl p-4 text-base text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800"
           placeholder="パスワード（6文字以上）"
-          placeholderTextColor="#888"
+          placeholderTextColor="#999"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
 
         <TextInput
-          style={styles.input}
+          className="bg-gray-100 dark:bg-gray-900 rounded-2xl p-4 text-base text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800"
           placeholder="パスワード（確認）"
-          placeholderTextColor="#888"
+          placeholderTextColor="#999"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
         />
 
         <Pressable
-          style={[styles.button, loading && styles.buttonDisabled]}
+          className={`bg-emerald-500 rounded-2xl p-4 items-center mt-2 ${
+            loading ? "opacity-60" : ""
+          }`}
           onPress={handleSignup}
           disabled={loading}
         >
-          <ThemedText style={styles.buttonText}>
+          <Text className="text-white text-base font-semibold">
             {loading ? "作成中..." : "アカウント作成"}
-          </ThemedText>
+          </Text>
         </Pressable>
 
         {/* 区切り線 */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.divider} />
-          <ThemedText style={styles.dividerText}>または</ThemedText>
-          <View style={styles.divider} />
+        <View className="flex-row items-center my-4">
+          <View className="flex-1 h-[1px] bg-gray-200 dark:bg-gray-800" />
+          <Text className="mx-4 text-gray-500 dark:text-gray-400 text-sm">
+            または
+          </Text>
+          <View className="flex-1 h-[1px] bg-gray-200 dark:bg-gray-800" />
         </View>
 
         {/* ソーシャルログインボタン */}
         <Pressable
-          style={[
-            styles.socialButton,
-            styles.googleButton,
-            googleLoading && styles.buttonDisabled,
-          ]}
+          className={`flex-row items-center justify-center rounded-2xl p-4 gap-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 ${
+            googleLoading ? "opacity-60" : ""
+          }`}
           onPress={googleSignIn}
           disabled={googleLoading}
         >
           <GoogleIcon width={20} height={20} />
-          <ThemedText style={styles.socialButtonGoogleText}>
+          <Text className="text-gray-900 dark:text-white text-base font-semibold">
             {googleLoading ? "処理中..." : "Googleで続ける"}
-          </ThemedText>
+          </Text>
         </Pressable>
 
         {Platform.OS === "ios" && (
           <Pressable
-            style={[
-              styles.socialButton,
-              styles.appleButton,
-              appleLoading && styles.buttonDisabled,
-            ]}
+            className={`flex-row items-center justify-center rounded-2xl p-4 gap-3 bg-black dark:bg-white border border-gray-800 dark:border-gray-200 ${
+              appleLoading ? "opacity-60" : ""
+            }`}
             onPress={appleSignIn}
             disabled={appleLoading}
           >
-            <Ionicons name="logo-apple" size={20} color="#fff" />
-            <ThemedText style={styles.socialButtonText}>
+            <Ionicons
+              name="logo-apple"
+              size={20}
+              color={Platform.OS === "ios" ? "#fff" : "#000"}
+            />
+            <Text className="text-white dark:text-black text-base font-semibold">
               {appleLoading ? "処理中..." : "Appleで続ける"}
-            </ThemedText>
+            </Text>
           </Pressable>
         )}
 
         <Link href="/(auth)/login" asChild>
-          <Pressable style={styles.linkButton}>
-            <ThemedText style={styles.linkText}>
+          <Pressable className="items-center mt-4">
+            <Text className="text-emerald-500 dark:text-emerald-400 text-sm font-medium">
               既にアカウントをお持ちの方はこちら
-            </ThemedText>
+            </Text>
           </Pressable>
         </Link>
       </KeyboardAvoidingView>
-    </ThemedView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inner: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 24,
-    gap: 12,
-  },
-  title: {
-    fontSize: 32,
-    lineHeight: 40,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 32,
-  },
-  input: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    color: "#fff",
-    borderWidth: 1,
-    borderColor: "#333",
-  },
-  button: {
-    backgroundColor: "#10b981",
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 16,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#333",
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: "#888",
-    fontSize: 14,
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-    padding: 16,
-    gap: 12,
-  },
-  googleButton: {
-    backgroundColor: "#fff",
-    borderWidth: 0.5,
-    borderColor: "#000",
-  },
-  socialButtonGoogleText: {
-    color: "#000000",
-  },
-  appleButton: {
-    backgroundColor: "#000",
-    borderWidth: 1,
-    borderColor: "#333",
-  },
-  socialButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  linkButton: {
-    alignItems: "center",
-    marginTop: 16,
-  },
-  linkText: {
-    color: "#3b82f6",
-    fontSize: 14,
-  },
-});
