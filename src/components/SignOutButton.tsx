@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/auth-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text } from "react-native";
+import { Alert, Pressable, Text } from "react-native";
 
 type SignOutButtonProps = {
   variant?: "default" | "outline" | "text";
@@ -32,67 +32,41 @@ export function SignOutButton({
     ]);
   };
 
-  const buttonStyles = [
-    styles.button,
-    variant === "outline" && styles.buttonOutline,
-    variant === "text" && styles.buttonText,
-    loading && styles.buttonDisabled,
-  ];
+  const getButtonClasses = () => {
+    const base = "flex-row items-center justify-center rounded-2xl p-4 gap-2";
+    const disabled = loading ? "opacity-60" : "";
 
-  const textStyles = [
-    styles.label,
-    variant === "outline" && styles.labelOutline,
-    variant === "text" && styles.labelText,
-  ];
+    if (variant === "outline") {
+      return `${base} bg-transparent border border-red-500 dark:border-red-400 ${disabled}`;
+    }
+    if (variant === "text") {
+      return `${base} bg-transparent p-2 ${disabled}`;
+    }
+    return `${base} bg-red-500 dark:bg-red-600 ${disabled}`;
+  };
 
-  const iconColor =
-    variant === "default"
-      ? "#fff"
-      : variant === "outline"
-      ? "#ef4444"
-      : "#ef4444";
+  const getTextClasses = () => {
+    if (variant === "outline" || variant === "text") {
+      return "text-red-500 dark:text-red-400 text-base font-semibold";
+    }
+    return "text-white text-base font-semibold";
+  };
+
+  const getIconColor = () => {
+    if (variant === "default") return "#fff";
+    return "#ef4444";
+  };
 
   return (
-    <Pressable style={buttonStyles} onPress={handleSignOut} disabled={loading}>
+    <Pressable
+      className={getButtonClasses()}
+      onPress={handleSignOut}
+      disabled={loading}
+    >
       {showIcon && (
-        <Ionicons name="log-out-outline" size={20} color={iconColor} />
+        <Ionicons name="log-out-outline" size={20} color={getIconColor()} />
       )}
-      <Text style={textStyles}>{loading ? "処理中..." : label}</Text>
+      <Text className={getTextClasses()}>{loading ? "処理中..." : label}</Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ef4444",
-    borderRadius: 12,
-    padding: 16,
-    gap: 8,
-  },
-  buttonOutline: {
-    backgroundColor: "transparent",
-    borderWidth: 1,
-    borderColor: "#ef4444",
-  },
-  buttonText: {
-    backgroundColor: "transparent",
-    padding: 8,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  label: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  labelOutline: {
-    color: "#ef4444",
-  },
-  labelText: {
-    color: "#ef4444",
-  },
-});
