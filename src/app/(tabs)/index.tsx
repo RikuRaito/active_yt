@@ -14,16 +14,18 @@ export default function Home() {
 
   if (isLoading && !videos.length) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <SafeAreaView className="flex-1 bg-white dark:bg-black items-center justify-center">
         <ActivityIndicator size="large" color="#000" />
       </SafeAreaView>
     );
   }
 
   return (
-    <View className="flex-1 bg-white">
-      <View className="px-6 py-4 border-b border-gray-100">
-        <Text className="text-2xl font-bold text-gray-900">ホーム</Text>
+    <View className="flex-1 bg-white dark:bg-black">
+      <View className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+        <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+          ホーム：最新動画一覧
+        </Text>
       </View>
 
       <FlatList
@@ -37,7 +39,7 @@ export default function Home() {
         }
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center pt-20">
-            <Text className="text-gray-400">
+            <Text className="text-gray-400 dark:text-gray-500">
               登録済みのチャンネルに新しい動画はありません
             </Text>
           </View>
