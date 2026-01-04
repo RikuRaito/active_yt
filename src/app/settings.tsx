@@ -1,10 +1,9 @@
+import { DeleteAccount } from "@/components/DeleteAccount";
 import { SignOutButton } from "@/components/SignOutButton";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 import { useAuth } from "@/contexts/auth-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SettingsModal() {
@@ -12,15 +11,17 @@ export default function SettingsModal() {
   const insets = useSafeAreaInsets();
 
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top + 30 }]}>
+    <View
+      className="flex-1 px-6 bg-white dark:bg-black"
+      style={{ paddingTop: insets.top + 30 }}
+    >
       {/* ヘッダー */}
-      <View style={styles.header}>
-        <ThemedText style={styles.title}>設定</ThemedText>
+      <View className="flex-row items-center justify-between mb-8">
+        <Text className="text-[28px] leading-9 font-bold text-gray-900 dark:text-white">
+          設定
+        </Text>
         <Pressable
-          style={({ pressed }) => [
-            styles.closeButton,
-            pressed && styles.pressed,
-          ]}
+          className="p-2 active:opacity-60"
           onPress={() => router.back()}
         >
           <Ionicons name="close" size={24} color="#888" />
@@ -28,99 +29,41 @@ export default function SettingsModal() {
       </View>
 
       {/* ユーザー情報 */}
-      <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>アカウント</ThemedText>
-        <View style={styles.card}>
-          <View style={styles.row}>
+      <View className="mb-6">
+        <Text className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">
+          アカウント
+        </Text>
+        <View className="bg-gray-100 dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+          <View className="flex-row items-center gap-3">
             <Ionicons name="mail-outline" size={20} color="#888" />
-            <View style={styles.rowContent}>
-              <ThemedText style={styles.label}>メールアドレス</ThemedText>
-              <ThemedText style={styles.value}>
+            <View className="flex-1">
+              <Text className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">
+                メールアドレス
+              </Text>
+              <Text className="text-base text-gray-900 dark:text-white font-medium">
                 {user?.email ?? "未設定"}
-              </ThemedText>
+              </Text>
             </View>
           </View>
         </View>
       </View>
 
       {/* サインアウト */}
-      <View style={styles.section}>
+      <View className="mb-6">
         <SignOutButton />
       </View>
 
-      {/* バージョン情報 */}
-      <View style={styles.footer}>
-        <ThemedText style={styles.footerText}>Version 1.0.0</ThemedText>
+      {/* アカウント削除 */}
+      <View className="mb-6">
+        <DeleteAccount />
       </View>
-    </ThemedView>
+
+      {/* バージョン情報 */}
+      <View className="absolute bottom-12 left-0 right-0 items-center">
+        <Text className="text-xs text-gray-400 dark:text-gray-600">
+          Version 1.0.0
+        </Text>
+      </View>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 16,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 28,
-    lineHeight: 36,
-    fontWeight: "bold",
-  },
-  closeButton: {
-    padding: 8,
-  },
-  pressed: {
-    opacity: 0.6,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#888",
-    marginBottom: 12,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
-  card: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: 12,
-    padding: 16,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  rowContent: {
-    flex: 1,
-  },
-  label: {
-    fontSize: 12,
-    color: "#888",
-    marginBottom: 2,
-  },
-  value: {
-    fontSize: 16,
-    color: "#fff",
-  },
-  footer: {
-    position: "absolute",
-    bottom: 48,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-  },
-  footerText: {
-    fontSize: 12,
-    color: "#666",
-  },
-});

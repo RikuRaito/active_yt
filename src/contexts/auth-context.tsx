@@ -9,6 +9,7 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<{ error: Error | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,9 +58,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const deleteAccount = async () => {
+    try {
+      // Supabaseのユーザー削除API（Admin APIを使用する必要があります）
+      // クライアント側からは直接削除できないため、Edge Functionを経由する必要があります
+      const { data, error } = await supabase.rpc("delete_user_account");
+
+      if (error) {
+        return { error };
+      }
+
+      // 削除成功後、サインアウト
+      await signOut();
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ session, user, isLoading, signIn, signUp, signOut }}
+      value={{
+        session,
+        user,
+        isLoading,
+        signIn,
+        signUp,
+        signOut,
+        deleteAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>
