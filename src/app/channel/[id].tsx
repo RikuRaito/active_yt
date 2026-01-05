@@ -1,4 +1,4 @@
-import { ChannelVideoItem } from "@/components/ChannelVideoItem";
+import { VideoCard } from "@/components/VideoCard";
 import { useChannelDetail } from "@/hooks/useChannelDetail";
 import { ChannelVideo } from "@/types/channel-videos";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -19,7 +19,9 @@ export default function ChannelDetail() {
   );
 
   const renderVideoItem = useCallback(
-    ({ item }: { item: ChannelVideo }) => <ChannelVideoItem item={item} />,
+    ({ item }: { item: ChannelVideo }) => (
+      <VideoCard video={item} showChannelInfo={false} />
+    ),
     []
   );
 
