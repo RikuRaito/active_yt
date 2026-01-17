@@ -45,8 +45,6 @@ API キーの流出を防ぐため、クライアントから YouTube API を直
          │
          │ HTTPS Request
          │
-┌────────▼─────────────────┐
-│ Supabase Edge Functions  │
 │  (Deno Runtime)          │
 └────────┬─────────────────┘
          │
@@ -73,7 +71,7 @@ API キーの流出を防ぐため、クライアントから YouTube API を直
 │   ├── app/                    # 画面 (Pages & Routing)
 │   │   ├── (auth)/            # 認証画面
 │   │   │   ├── login.tsx      # ログイン画面
-│   │   │   └── signup.tsx     # サインアップ画面
+│   │   │   └── signup.tsx   
 │   │   ├── (tabs)/            # タブ画面
 │   │   │   ├── index.tsx      # ホーム（最新動画一覧）
 │   │   │   └── subscription.tsx  # チャンネル登録管理
