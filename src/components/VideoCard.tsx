@@ -1,6 +1,7 @@
 import { useVideoCard } from "@/hooks/useVideoCard";
 import { BaseVideo, Video } from "@/types/videos";
 import { Ionicons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useRef, useState } from "react";
@@ -40,6 +41,7 @@ export const VideoCard = ({
   const { saveProgress } = useVideoCard();
   const playerRef = useRef<YoutubeIframeRef>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const queryClient = useQueryClient();
 
   const openPlayer = async () => {
     setIsModalVisible(true);
@@ -78,6 +80,10 @@ export const VideoCard = ({
     if (position && videoDuration) {
       await saveProgress(video.videoId, position, videoDuration);
     }
+
+    //モーダルが閉じたらプログレスデータのキャッシュを無効化
+    queryClient.invalidateQueries({ queryKey: ["video-progress"] });
+
     setIsModalVisible(false);
     setIsPlaying(false);
   };
