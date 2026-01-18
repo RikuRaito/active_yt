@@ -28,7 +28,9 @@ export default function ChannelDetail() {
   if (isLoading && !channelData) {
     return (
       <SafeAreaView className="flex-1 bg-white dark:bg-black items-center justify-center">
-        <Stack.Screen options={{ title: "読み込み中..." }} />
+        <Stack.Screen
+          options={{ title: "読み込み中...", headerBackTitle: "戻る" }}
+        />
         <ActivityIndicator size="large" color="#000" />
       </SafeAreaView>
     );
