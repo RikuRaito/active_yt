@@ -9,6 +9,16 @@ interface VideoCardData {
   publishedAt: string;
 }
 
+// ISO 8601形式のdurationを秒数に変換
+function parseDuration(duration: string): number {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseInt(match[3] || '0', 10);
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
 Deno.serve(async (req) => {
   const authResult = await authenticateUser(req);
 
@@ -26,7 +36,7 @@ Deno.serve(async (req) => {
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 400,
-        }
+        },
       );
     }
 
@@ -34,7 +44,7 @@ Deno.serve(async (req) => {
     const youtubeUrl = Deno.env.get("YOUTUBE_API_URL");
     //各IDに対して並列でfetchを実行
     const videoPromises = playlist_ids.map(async (id) => {
-      const url = `${youtubeUrl}/playlistItems?part=snippet&playlistId=${id}&maxResults=1&key=${apiKey}`;
+      const url = `${youtubeUrl}/playlistItems?part=snippet&playlistId=${id}&maxResults=5&key=${apiKey}`;
       //動画の取得処理
       const res = await fetch(url);
       if (!res.ok) {
@@ -42,7 +52,25 @@ Deno.serve(async (req) => {
         return [];
       }
       const data = await res.json();
-      const mappedData: VideoCardData[] = data.items.map((d: any) => ({
+      //durationでのショート動画判別(Youtube Data APIを使って５件の動画の長さを取得する)
+      const videoIds = data.items.map((d: any) => d.snippet.resourceId.videoId).join(',');
+      const videoUrl = `${youtubeUrl}/videos?part=contentDetails&id=${videoIds}&key=${apiKey}`;
+      const videosRes = await fetch(videoUrl);
+      const videoData = await videosRes.json();
+      const shortVideoIds = new Set(
+        videoData.items
+          .filter((v: any) => {
+            const duration = v.contentDetails.duration;
+            const seconds = parseDuration(duration);
+            return seconds <= 60;
+          })
+          .map((v: any) => v.id)
+      );
+      const filtered = data.items.filter(
+        (d: any) => !shortVideoIds.has(d.snippet.resourceId.videoId)
+      );
+
+      const mappedData: VideoCardData[] = filtered.slice(0, 1).map((d: any) => ({
         channelId: d.snippet.channelId,
         videoId: d.snippet.resourceId.videoId,
         title: d.snippet.title,

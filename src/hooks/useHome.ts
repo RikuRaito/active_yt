@@ -5,11 +5,8 @@ import { useRouter } from "expo-router";
 import { useSubscribedChannels } from "./useSubscribedChannels";
 
 export const useHome = () => {
-  const {
-    data: channels,
-    isLoading: isLoadingChannel,
-    error,
-  } = useSubscribedChannels();
+  const { data: channels, isLoading: isLoadingChannel } =
+    useSubscribedChannels();
 
   const router = useRouter();
 
@@ -26,7 +23,7 @@ export const useHome = () => {
       const playlistIds = channels.map((channel) => channel.uploadsPlaylistId);
       const { data, error } = await supabase.functions.invoke<Videos>(
         "get-videos",
-        { body: { uploadsPlaylistIds: playlistIds } }
+        { body: { uploadsPlaylistIds: playlistIds } },
       );
 
       if (error) throw error;
