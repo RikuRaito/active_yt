@@ -15,14 +15,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function ChannelDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { channelData, isLoading, performGetVideos } = useChannelDetail(
-    id ?? ""
+    id ?? "",
   );
 
   const renderVideoItem = useCallback(
     ({ item }: { item: ChannelVideo }) => (
       <VideoCard video={item} showChannelInfo={false} />
     ),
-    []
+    [],
   );
 
   if (isLoading && !channelData) {
