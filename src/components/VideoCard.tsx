@@ -1,8 +1,9 @@
+import { useVideoCard } from "@/hooks/useVideoCard";
 import { BaseVideo, Video } from "@/types/videos";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import * as ScreenOrientation from "expo-screen-orientation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Modal,
   Text,
@@ -10,7 +11,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import YoutubePlayer from "react-native-youtube-iframe";
+import YoutubePlayer, { YoutubeIframeRef } from "react-native-youtube-iframe";
 
 // 統合型: BaseVideo または Video のどちらでも受け付ける
 type VideoCardVideo = BaseVideo | Video;
@@ -35,13 +36,27 @@ export const VideoCard = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const { width, height } = useWindowDimensions();
+  //視聴データをDBに保存する機能のための変数定義
+  const { saveProgress } = useVideoCard();
+  const playerRef = useRef<YoutubeIframeRef>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const openPlayer = async () => {
     setIsModalVisible(true);
     setIsPlaying(true);
     await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT,
     );
+
+    //視聴データ保存のためのインターバル開始
+    intervalRef.current = setInterval(async () => {
+      const position = await playerRef.current?.getCurrentTime();
+      const videoDuration = await playerRef.current?.getDuration();
+
+      if (position && videoDuration) {
+        await saveProgress(video.videoId, position, videoDuration);
+      }
+    }, 10000);
   };
 
   const handlePlayerStateChange = async (state: string) => {
@@ -52,13 +67,24 @@ export const VideoCard = ({
   };
 
   const closeModal = async () => {
+    //インターバル停止
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    const position = await playerRef.current?.getCurrentTime();
+    const videoDuration = await playerRef.current?.getDuration();
+    if (position && videoDuration) {
+      await saveProgress(video.videoId, position, videoDuration);
+    }
     setIsModalVisible(false);
     setIsPlaying(false);
   };
 
   const handleModalDismiss = async () => {
     await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.DEFAULT
+      ScreenOrientation.OrientationLock.DEFAULT,
     );
   };
 
@@ -89,6 +115,15 @@ export const VideoCard = ({
               <Ionicons name="play" size={32} color="white" />
             </View>
           </View>
+          {/* 視聴進捗バー */}
+          {video.duration && video.duration > 0 && (
+            <View className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600/50">
+              <View
+                className="h-full bg-red-500"
+                style={{ width: `${video.duration}%` }}
+              />
+            </View>
+          )}
         </TouchableOpacity>
 
         {/* チャンネル情報あり: チャンネルアイコン + タイトル + チャンネル名 */}
@@ -148,6 +183,7 @@ export const VideoCard = ({
             width={videoWidth > width ? width : videoWidth}
             height={videoHeight}
             videoId={video.videoId}
+            ref={playerRef}
             play={isPlaying}
             onChangeState={handlePlayerStateChange}
             webViewProps={{
@@ -158,6 +194,7 @@ export const VideoCard = ({
             initialPlayerParams={{
               preventFullScreen: true,
               controls: true,
+              start: video.position,
             }}
           />
           {/* 閉じるボタン */}
